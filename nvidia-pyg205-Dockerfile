@@ -1,0 +1,21 @@
+#
+# This example Dockerfile illustrates a method to install
+# additional packages on top of NVIDIA's PyTorch container image.
+#
+# To use this Dockerfile, use the `docker build` command.
+# See https://docs.docker.com/engine/reference/builder/
+# for more information.
+#
+FROM nvcr.io/nvidia/pytorch:21.12-py3
+
+# Install my-extra-package-1 and my-extra-package-2
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#        my-extra-package-1 \
+#        my-extra-package-2 \
+#      && \
+#    rm -rf /var/lib/apt/lists/
+RUN apt-get update
+RUN pip uninstall -y torchaudio torchtext torchvision
+RUN pip uninstall -y torch
+RUN pip install -q torch torchvision torchtext --extra-index-url https://download.pytorch.org/whl/cu115
+RUN pip install -q torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric -f https://data.pyg.org/whl/torch-1.11.0+cu115.html
